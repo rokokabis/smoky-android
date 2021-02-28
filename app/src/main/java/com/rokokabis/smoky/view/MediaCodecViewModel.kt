@@ -20,6 +20,8 @@ class MediaCodecViewModel : ViewModel() {
     val encodingProgress: MutableLiveData<EncodingProgress> = MutableLiveData()
     val debugInfo: MutableLiveData<String> = MutableLiveData()
 
+    private var output = ""
+
     fun getInfo(file: File): String {
         var info = ""
         val extractor = MediaExtractor()
@@ -93,7 +95,9 @@ class MediaCodecViewModel : ViewModel() {
             "-t",
             "20",
             "-s",
-            "960x540",
+            //"-vf",
+            //"crop=540:960:0:540",
+            "540x960",
             "-r",
             "24",
             "-vcodec",
@@ -109,6 +113,7 @@ class MediaCodecViewModel : ViewModel() {
             destination.absolutePath
         )
 
+        output = destination.absolutePath
         executeFfmpegBinary(complexCommand)
     }
 
@@ -128,7 +133,7 @@ class MediaCodecViewModel : ViewModel() {
             commands
         ) { executionId, returnCode ->
             if (returnCode == Config.RETURN_CODE_SUCCESS) {
-                encodingProgress.postValue(EncodingProgress.OnCompleted)
+                encodingProgress.postValue(EncodingProgress.OnCompleted(output))
                 Timber.d("codex_ffmpeg SUCCESS")
             } else if (returnCode == Config.RETURN_CODE_CANCEL) {
                 Timber.d("codex_ffmpeg CANCELLED")

@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.rokokabis.smoky.R
@@ -16,16 +17,17 @@ import java.io.File
 
 
 class EncodingFragment : BaseFragment() {
-    private val viewModel by activityViewModels<MediaCodecViewModel>()
+    private val sharedViewModel by activityViewModels<MediaCodecViewModel>()
+    private val viewModel by viewModels<MediaCodecViewModel>()
     private var progressBar: LinearProgressIndicator? = null
     private var textProgress: TextView? = null
 
     override fun layoutRes() = R.layout.fragment_encoding
 
     override fun initView(view: View) {
-        requireActivity().observe(viewModel.filePathLiveData, ::bindPath)
-        requireActivity().observe(viewModel.encodingProgress, ::bindProgress)
-        requireActivity().observe(viewModel.debugInfo, ::bindDebugInfo)
+        requireActivity().observe(sharedViewModel.filePathLiveData, ::bindPath)
+        observe(viewModel.encodingProgress, ::bindProgress)
+        observe(viewModel.debugInfo, ::bindDebugInfo)
 
         progressBar = view.findViewById(R.id.linear_progress)
         textProgress = view.findViewById(R.id.text_progress)
@@ -33,16 +35,20 @@ class EncodingFragment : BaseFragment() {
 
     private fun bindPath(path: String?) {
         Timber.d("codex > $path")
-        var meta = ""
-        path?.let {
-            meta += viewModel.getInfo(File(it))
+        view?.post {
+            path?.let {
+                viewModel.startEncoding(it)
+                setInfo(path = it)
+            }
         }
+    }
 
-        view?.findViewById<TextView>(R.id.text_view)?.text = meta
+    private fun setInfo(path: String) {
+        var meta = ""
+        meta += viewModel.getInfo(File(path))
 
         view?.post {
-            path?.let { viewModel.startEncoding(it) }
-
+            view?.findViewById<TextView>(R.id.text_view)?.text = meta
             val thumbImageView = view?.findViewById<ImageView>(R.id.thumb)
 
             Glide.with(requireActivity())
@@ -58,6 +64,8 @@ class EncodingFragment : BaseFragment() {
                 view?.post {
                     progressBar?.progress = 100
                     textProgress?.text = "Completed"
+
+                    setInfo(path = progress.path)
                 }
             }
             is EncodingProgress.OnProgress -> {
