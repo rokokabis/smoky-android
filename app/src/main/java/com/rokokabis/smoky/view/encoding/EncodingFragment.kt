@@ -1,29 +1,36 @@
 package com.rokokabis.smoky.view.encoding
 
-import android.media.MediaCodec.BufferInfo
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import android.media.MediaMuxer
+import android.os.Environment
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.FFmpeg
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.rokokabis.smoky.R
 import com.rokokabis.smoky.arch.BaseFragment
 import com.rokokabis.smoky.utils.observe
+import com.rokokabis.smoky.utils.toast
 import com.rokokabis.smoky.view.MediaCodecViewModel
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.nio.ByteBuffer
 
 
 class EncodingFragment : BaseFragment() {
     private val viewModel by activityViewModels<MediaCodecViewModel>()
+    private var progressBar: LinearProgressIndicator? = null
+
+    override fun layoutRes() = R.layout.fragment_encoding
 
     override fun initView(view: View) {
         requireActivity().observe(viewModel.filePathLiveData, ::bindPath)
+
+        progressBar = view.findViewById(R.id.linear_progress)
     }
 
     private fun bindPath(path: String?) {
@@ -37,25 +44,71 @@ class EncodingFragment : BaseFragment() {
 
         view?.findViewById<TextView>(R.id.text_view)?.text = meta
 
+        view?.post {
+            path?.let { startEncoding(it) }
+        }
+
         //path?.let { startEncoding(it) }
     }
 
     private fun startEncoding(path: String) {
-        val muxer = MediaMuxer(path, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
-        val videoFormat = MediaFormat()
-        val audioFormat = MediaFormat()
+        val moviesDir: File = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_MOVIES
+        )
 
-        val extractor = MediaExtractor()
+        val name = File(path).name.split(".")[0]
+        Timber.d("krokodil $name")
+        var destination = File(moviesDir, "${name}_compressed.mp4")
+        var fileNumber = 0
+        while (destination.exists()) {
+            fileNumber++
+            destination = File(moviesDir, "${name}_compressed$fileNumber.mp4")
+        }
 
-        val videoTrack = muxer.addTrack(videoFormat)
-        val audioTrack = muxer.addTrack(audioFormat)
+        val complexCommand = arrayOf(
+            "-y",
+            "-i",
+            path,
+            "-s",
+            "960x540",
+            "-r",
+            "25",
+            "-vcodec",
+            "mpeg4",
+            "-b:v",
+            "150k",
+            "-b:a",
+            "48000",
+            "-ac",
+            "2",
+            "-ar",
+            "22050",
+            destination.absolutePath
+        )
 
-        val inputBuffer: ByteBuffer = ByteBuffer.allocate(2048)
-        val finished = false
-        val bufferInfo = BufferInfo()
+        executeFfmpegBinary(complexCommand)
     }
 
-    override fun layoutRes() = R.layout.fragment_encoding
+    private fun executeFfmpegBinary(commands: Array<String>) {
+        Config.enableLogCallback {
+            Timber.d("codex_ffmpeg ${it.text}")
+        }
+
+        Config.enableStatisticsCallback {
+            Timber.d("codex_ffmpeg $it")
+        }
+
+        FFmpeg.executeAsync(
+            commands
+        ) { executionId, returnCode ->
+
+            if (returnCode == Config.RETURN_CODE_SUCCESS) {
+                requireActivity().toast("Success!")
+            } else if (returnCode == Config.RETURN_CODE_CANCEL) {
+                requireActivity().toast("Cancelled")
+            }
+        }
+    }
 
     private fun extract(file: File): String {
         var info = ""
