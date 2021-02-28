@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
 }
 
 android {
@@ -59,6 +60,10 @@ dependencies {
     implementation("com.karumi:dexter:5.0.0")
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("com.arthenica:mobile-ffmpeg-full-gpl:4.4.LTS")
+
+    val glideVersion = "4.11.0"
+    implementation("com.github.bumptech.glide:glide:$glideVersion")
+    kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("com.android.support.test:runner:1.0.2")

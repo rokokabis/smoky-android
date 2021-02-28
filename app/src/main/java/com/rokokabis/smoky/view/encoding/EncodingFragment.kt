@@ -1,8 +1,10 @@
 package com.rokokabis.smoky.view.encoding
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.rokokabis.smoky.R
 import com.rokokabis.smoky.arch.BaseFragment
@@ -40,6 +42,13 @@ class EncodingFragment : BaseFragment() {
 
         view?.post {
             path?.let { viewModel.startEncoding(it) }
+
+            val thumbImageView = view?.findViewById<ImageView>(R.id.thumb)
+
+            Glide.with(requireActivity())
+                .load(path)
+                .centerCrop()
+                .into(thumbImageView!!)
         }
     }
 
