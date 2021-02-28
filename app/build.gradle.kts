@@ -66,6 +66,14 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("android.arch.core:core-testing:1.1.1")
+    testImplementation("com.google.truth:truth:1.0.1")
+    testImplementation("androidx.test.ext:junit:1.1.2")
+    testImplementation("androidx.test.ext:truth:1.3.0")
+
+    testImplementation("org.mockito:mockito-core:3.0.0")
+    testImplementation("org.mockito:mockito-core:3.0.0")
+
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
 }
