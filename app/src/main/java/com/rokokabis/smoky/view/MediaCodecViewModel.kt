@@ -54,11 +54,11 @@ class MediaCodecViewModel : ViewModel() {
                 }
 
                 if (format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
-                    info += ">>> ${format.getInteger(MediaFormat.KEY_SAMPLE_RATE)} hz\n"
+                    info += ">>> ${format.getInteger(MediaFormat.KEY_SAMPLE_RATE) / 1000} kHz\n"
                 }
 
                 if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
-                    info += ">>> ${format.getInteger(MediaFormat.KEY_BIT_RATE)} bits/sec\n"
+                    info += ">>> ${format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000} kbit/sec\n"
                 }
 
             }
@@ -103,13 +103,15 @@ class MediaCodecViewModel : ViewModel() {
             "-vcodec",
             "mpeg4",
             "-b:v",
-            "150k",
+            "1000k",
             "-b:a",
-            "44100",
+            "64k",
             "-ac",
-            "2",
+            "1",
             "-ar",
-            "22050",
+            "44100",
+            "-strict",
+            "-2",
             destination.absolutePath
         )
 
