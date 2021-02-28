@@ -9,6 +9,9 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
 import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -32,7 +35,6 @@ fun Activity.askPermission(onGranted: () -> Unit, onDenied: (() -> Unit)? = null
                         onGranted()
                     } else if (report.isAnyPermissionPermanentlyDenied) {
                         onDenied?.invoke()
-                        toast("R.string.akses_storage")
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -43,7 +45,6 @@ fun Activity.askPermission(onGranted: () -> Unit, onDenied: (() -> Unit)? = null
                 } catch (ex: Exception) {
                     if (report.isAnyPermissionPermanentlyDenied) {
                         onDenied?.invoke()
-                        toast("R.string.akses_storage")
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -67,8 +68,14 @@ fun Context.getFilePath(contentUri: Uri?): String? {
     return try {
         val projection = arrayOf(MediaStore.Video.Media.DATA)
         cursor =
-            contentResolver.query(contentUri!!, projection, null, null, null)
-        val column: Int? = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            contentUri?.let {
+                contentResolver.query(
+                    it, projection,
+                    null, null, null
+                )
+            }
+        val column: Int? =
+            cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor?.moveToFirst()
         column?.let { cursor?.getString(it) }
     } catch (e: Exception) {
@@ -77,4 +84,8 @@ fun Context.getFilePath(contentUri: Uri?): String? {
     } finally {
         cursor?.close()
     }
+}
+
+fun <T> LifecycleOwner.observe(liveData: MutableLiveData<T>, action: (t: T) -> Unit) {
+    liveData.observe(this, Observer { it?.let { t -> action(t) } })
 }

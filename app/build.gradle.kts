@@ -52,14 +52,13 @@ dependencies {
     implementation("org.koin:koin-android:${koinVersion}")
     implementation("org.koin:koin-android-scope:${koinVersion}")
 
-
     val navVersion = "2.3.3"
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     implementation("com.karumi:dexter:5.0.0")
-
     implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation("com.arthenica:mobile-ffmpeg-full-gpl:4.4.LTS")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
