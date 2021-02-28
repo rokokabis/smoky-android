@@ -23,6 +23,7 @@ class EncodingFragment : BaseFragment() {
     override fun initView(view: View) {
         requireActivity().observe(viewModel.filePathLiveData, ::bindPath)
         requireActivity().observe(viewModel.encodingProgress, ::bindProgress)
+        requireActivity().observe(viewModel.debugInfo, ::bindDebugInfo)
 
         progressBar = view.findViewById(R.id.linear_progress)
         textProgress = view.findViewById(R.id.text_progress)
@@ -58,6 +59,14 @@ class EncodingFragment : BaseFragment() {
                     }
 
                 }
+            }
+        }
+    }
+
+    private fun bindDebugInfo(info: String) {
+        with(view) {
+            this?.post {
+                this.findViewById<TextView>(R.id.debug_text)?.text = info
             }
         }
     }

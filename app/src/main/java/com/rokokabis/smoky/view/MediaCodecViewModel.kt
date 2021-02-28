@@ -18,6 +18,7 @@ import kotlin.math.roundToInt
 class MediaCodecViewModel : ViewModel() {
     val filePathLiveData: MutableLiveData<String?> = MutableLiveData()
     val encodingProgress: MutableLiveData<EncodingProgress> = MutableLiveData()
+    val debugInfo: MutableLiveData<String> = MutableLiveData()
 
     fun getInfo(file: File): String {
         var info = ""
@@ -114,6 +115,7 @@ class MediaCodecViewModel : ViewModel() {
     private fun executeFfmpegBinary(commands: Array<String>) {
         Config.enableLogCallback {
             Timber.d("codex_ffmpeg ${it.text}")
+            debugInfo.postValue(it.text)
         }
 
         Config.enableStatisticsCallback {
