@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.rokokabis.smoky.R
@@ -67,6 +68,11 @@ class EncodingFragment : BaseFragment() {
 
                     setInfo(path = progress.path)
                 }
+
+                // add bit of delay so user can see what the result is
+                view?.postDelayed({
+                    view?.findNavController()?.popBackStack()
+                }, 1000)
             }
             is EncodingProgress.OnProgress -> {
                 view?.post {
