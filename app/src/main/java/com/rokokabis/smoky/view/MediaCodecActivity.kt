@@ -11,4 +11,8 @@ class MediaCodecActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+
+    companion object {
+        const val MAX_FRAME = 480 // 20 seconds of a 24fps video
+    }
 }

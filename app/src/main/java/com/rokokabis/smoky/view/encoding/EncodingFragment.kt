@@ -12,18 +12,20 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.rokokabis.smoky.R
 import com.rokokabis.smoky.arch.BaseFragment
 import com.rokokabis.smoky.utils.observe
-import com.rokokabis.smoky.utils.toast
+import com.rokokabis.smoky.view.MediaCodecActivity
 import com.rokokabis.smoky.view.MediaCodecViewModel
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.roundToInt
 
 
 class EncodingFragment : BaseFragment() {
     private val viewModel by activityViewModels<MediaCodecViewModel>()
     private var progressBar: LinearProgressIndicator? = null
+    private var textProgress: TextView? = null
 
     override fun layoutRes() = R.layout.fragment_encoding
 
@@ -31,6 +33,7 @@ class EncodingFragment : BaseFragment() {
         requireActivity().observe(viewModel.filePathLiveData, ::bindPath)
 
         progressBar = view.findViewById(R.id.linear_progress)
+        textProgress = view.findViewById(R.id.text_progress)
     }
 
     private fun bindPath(path: String?) {
@@ -57,7 +60,6 @@ class EncodingFragment : BaseFragment() {
         )
 
         val name = File(path).name.split(".")[0]
-        Timber.d("krokodil $name")
         var destination = File(moviesDir, "${name}_compressed.mp4")
         var fileNumber = 0
         while (destination.exists()) {
@@ -69,16 +71,18 @@ class EncodingFragment : BaseFragment() {
             "-y",
             "-i",
             path,
+            "-t",
+            "20",
             "-s",
             "960x540",
             "-r",
-            "25",
+            "24",
             "-vcodec",
             "mpeg4",
             "-b:v",
             "150k",
             "-b:a",
-            "48000",
+            "44100",
             "-ac",
             "2",
             "-ar",
@@ -96,17 +100,24 @@ class EncodingFragment : BaseFragment() {
 
         Config.enableStatisticsCallback {
             Timber.d("codex_ffmpeg $it")
+
+            view?.post {
+                val progress = (it.videoFrameNumber / MediaCodecActivity.MAX_FRAME.toDouble()) * 100
+                progressBar?.progress = progress.roundToInt()
+
+                textProgress?.text = "Encoding on progress ${progress.roundToInt()}%"
+            }
         }
 
         FFmpeg.executeAsync(
             commands
         ) { executionId, returnCode ->
-
             if (returnCode == Config.RETURN_CODE_SUCCESS) {
-                requireActivity().toast("Success!")
+                Timber.d("codex_ffmpeg SUCCESS")
             } else if (returnCode == Config.RETURN_CODE_CANCEL) {
-                requireActivity().toast("Cancelled")
+                Timber.d("codex_ffmpeg CANCELLED")
             }
+
         }
     }
 
@@ -160,5 +171,10 @@ class EncodingFragment : BaseFragment() {
         }
 
         return info
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        FFmpeg.cancel()
     }
 }
