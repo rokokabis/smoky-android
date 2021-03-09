@@ -7,9 +7,9 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
+import com.rokokabis.permission.askPermission
 import com.rokokabis.smoky.R
 import com.rokokabis.smoky.arch.BaseFragment
-import com.rokokabis.smoky.utils.askPermission
 import com.rokokabis.smoky.utils.getFilePath
 import com.rokokabis.smoky.utils.toast
 import com.rokokabis.smoky.view.MediaCodecViewModel
@@ -20,7 +20,7 @@ class OpeningFragment : BaseFragment() {
 
     override fun initView(view: View) {
         view.findViewById<MaterialButton>(R.id.button_select_video).setOnClickListener {
-            requireActivity().askPermission(
+            askPermission(
                 onDenied = {
                     requireActivity().toast("Permission denied")
                 },

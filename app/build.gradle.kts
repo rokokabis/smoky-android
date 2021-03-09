@@ -68,7 +68,7 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoVersion")
 
     // permission library
-    implementation("com.karumi:dexter:5.0.0")
+    implementation(project(":permission"))
 
     // logging
     implementation("com.jakewharton.timber:timber:4.7.1")
