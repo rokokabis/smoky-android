@@ -16,4 +16,7 @@ Encoding sample using this specs:
 
 ## Features
 - Positive cases
+
+  ![](https://i.ibb.co/Sfw4hnT/20210228-231653.gif)
+  
 - Unit test
