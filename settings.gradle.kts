@@ -1,5 +1,4 @@
-include(":repository")
+include(":common")
 include(":domain")
-include(":permission")
 include(":app")
 rootProject.name = "Smoky"

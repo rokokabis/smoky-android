@@ -15,6 +15,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.math.roundToInt
 
+@Suppress("DEPRECATION")
 class MediaCodecViewModel : ViewModel() {
     val filePathLiveData: MutableLiveData<String?> = MutableLiveData()
     val encodingProgress: MutableLiveData<EncodingProgress> = MutableLiveData()
@@ -75,7 +76,7 @@ class MediaCodecViewModel : ViewModel() {
     }
 
     fun startEncoding(path: String) {
-        // I'm using legacy storage access
+        // legacy storage access
         val moviesDir: File = Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_MOVIES
         )
@@ -133,7 +134,7 @@ class MediaCodecViewModel : ViewModel() {
 
         FFmpeg.executeAsync(
             commands
-        ) { executionId, returnCode ->
+        ) { _, returnCode ->
             if (returnCode == Config.RETURN_CODE_SUCCESS) {
                 encodingProgress.postValue(EncodingProgress.OnCompleted(output))
                 Timber.d("codex_ffmpeg SUCCESS")

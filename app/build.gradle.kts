@@ -67,8 +67,8 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoVersion")
     implementation("com.google.android.exoplayer:exoplayer-ui:$exoVersion")
 
-    // permission library
-    implementation(project(":permission"))
+    // permission module
+    implementation(project(":common"))
 
     // logging
     implementation("com.jakewharton.timber:timber:4.7.1")

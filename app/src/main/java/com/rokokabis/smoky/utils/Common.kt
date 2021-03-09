@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.rokokabis.smoky.utils
 
 import android.content.Context

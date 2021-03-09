@@ -8,8 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.rokokabis.common.arch.BaseFragment
 import com.rokokabis.smoky.R
-import com.rokokabis.smoky.arch.BaseFragment
 import com.rokokabis.smoky.domain.EncodingProgress
 import com.rokokabis.smoky.utils.observe
 import com.rokokabis.smoky.view.MediaCodecViewModel

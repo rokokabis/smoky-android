@@ -57,4 +57,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$archVersion")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$archVersion")
     implementation ("androidx.lifecycle:lifecycle-common-java8:$archVersion")
+
+    // permission library
+    implementation("com.karumi:dexter:5.0.0")
 }
