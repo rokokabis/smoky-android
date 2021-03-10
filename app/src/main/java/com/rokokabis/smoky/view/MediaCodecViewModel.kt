@@ -32,7 +32,7 @@ class MediaCodecViewModel(private val encodingUseCase: EncodingUseCase) : BaseVi
     }
 
     fun handleSuccess(data: Any) {
-        Timber.d("krokayy suck $data")
+        Timber.d("krokayy succ $data")
     }
 
     fun handleFailure(error: ResultError) {
