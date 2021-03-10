@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_nav"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav"
     app:startDestination="@id/openingFragment">
 
     <fragment
         android:id="@+id/openingFragment"
         android:name="com.rokokabis.smoky.view.opening.OpeningFragment"
-        android:label="OpeningFragment" >
+        android:label="OpeningFragment">
         <action
             android:id="@+id/action_openingFragment_to_encodingFragment"
             app:destination="@id/encodingFragment" />

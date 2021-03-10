@@ -50,9 +50,10 @@ dependencies {
     implementation("com.android.support.constraint:constraint-layout:2.0.4")
 
     // dependency injection
-    val koinVersion = "1.0.0"
-    implementation("org.koin:koin-android:$koinVersion")
-    implementation("org.koin:koin-android-scope:$koinVersion")
+    //val koinVersion = "1.0.0"
+    implementation("org.koin:koin-android:2.1.5")
+    implementation("org.koin:koin-android-scope:2.1.5")
+    implementation("org.koin:koin-android-viewmodel:2.1.5")
 
     // android nav components
     val navVersion = "2.3.3"
@@ -69,6 +70,8 @@ dependencies {
 
     // permission module
     implementation(project(":common"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
 
     // logging
     implementation("com.jakewharton.timber:timber:4.7.1")

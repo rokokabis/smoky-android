@@ -1,3 +1,4 @@
+include(":data")
 include(":common")
 include(":domain")
 include(":app")

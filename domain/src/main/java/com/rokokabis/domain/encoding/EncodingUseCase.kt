@@ -1,10 +1,14 @@
 package com.rokokabis.domain.encoding
 
-class EncodingUseCase(private val repository: EncodingRepository) {
-    sealed class State {
-        data class OnProgress(var progress: Int) : State()
-        data class OnCompleted(var data: EncodingData) : State()
-    }
+import com.rokokabis.domain.common.BaseUseCase
+import com.rokokabis.domain.common.Result
 
-    suspend fun getEncoding() = repository.getEncoding()
+class EncodingUseCase(private val repository: EncodingRepository) : BaseUseCase<EncodingModel>() {
+    override suspend fun run(params: EncodingModel) {
+        resultChannel.send(Result.State.Loading(0))
+
+        resultChannel.send(repository.getEncoding(params))
+
+        resultChannel.send(Result.State.Loaded)
+    }
 }

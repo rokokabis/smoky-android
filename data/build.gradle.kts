@@ -58,8 +58,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$archVersion")
     implementation ("androidx.lifecycle:lifecycle-common-java8:$archVersion")
 
-    // permission library
-    implementation("com.karumi:dexter:5.0.0")
-
     implementation(project(":domain"))
+    implementation(project(":common"))
+
+    // ffmpeg
+    implementation("com.arthenica:mobile-ffmpeg-full-gpl:4.4.LTS")
 }

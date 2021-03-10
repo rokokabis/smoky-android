@@ -4,14 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.provider.MediaStore
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.rokokabis.common.arch.BaseFragment
 import com.rokokabis.common.ext.askPermission
+import com.rokokabis.common.ext.getFilePath
+import com.rokokabis.common.ext.toast
 import com.rokokabis.smoky.R
-import com.rokokabis.smoky.utils.getFilePath
-import com.rokokabis.smoky.utils.toast
 import com.rokokabis.smoky.view.MediaCodecViewModel
 
 
@@ -42,8 +43,9 @@ class OpeningFragment : BaseFragment() {
         startActivityForResult(intent, BROWSE_VIDEO_REQUEST_CODE)
     }
 
-    private fun navigateToEncodingScreen() {
-        view?.findNavController()?.navigate(R.id.action_openingFragment_to_encodingFragment)
+    private fun navigateToEncodingScreen(path: String?) {
+        val bundle = bundleOf("path" to path)
+        view?.findNavController()?.navigate(R.id.action_openingFragment_to_encodingFragment, bundle)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -52,9 +54,9 @@ class OpeningFragment : BaseFragment() {
         if (resultCode == Activity.RESULT_OK && requestCode == BROWSE_VIDEO_REQUEST_CODE) {
             val path = requireActivity().getFilePath(data?.data)
             requireActivity().toast("File path: $path")
-            viewModel.filePathLiveData.value = path
+            //viewModel.filePathLiveData.value = path
 
-            navigateToEncodingScreen()
+            navigateToEncodingScreen(path)
         }
 
     }
